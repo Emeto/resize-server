@@ -10,20 +10,37 @@ import (
 	"image/png"
 	"io"
 	"net/http"
+	"resize-server/config"
 	"resize-server/internal/entity"
 )
 
 type ScalingUseCase struct {
-	Scale entity.Scaling
+	Scale   entity.Scaling
+	Presets map[string]Preset
 }
 
-func New() *ScalingUseCase {
+type Preset struct {
+	Width  uint
+	Height uint
+}
+
+func New(presets []config.Preset) *ScalingUseCase {
+	prMap := make(map[string]Preset, len(presets))
+
+	for _, preset := range presets {
+		prMap[preset.Name] = Preset{
+			Width:  preset.Width,
+			Height: preset.Height,
+		}
+	}
+
 	return &ScalingUseCase{
 		Scale: entity.Scaling{
 			Width:     600,
 			Height:    0,
 			InterFunc: resize.Lanczos3,
 		},
+		Presets: prMap,
 	}
 }
 
@@ -93,4 +110,16 @@ func (uc *ScalingUseCase) Encode(m image.Image, s entity.Scaling) (*bytes.Buffer
 	}
 
 	return nil, fmt.Errorf("ScalingUseCase(Encode) - unsupported file extension")
+}
+
+func (uc *ScalingUseCase) SetSizeFromPreset(p string) bool {
+	_, ok := uc.Presets[p]
+	if ok {
+		uc.Scale.Width = uc.Presets[p].Width
+		uc.Scale.Height = uc.Presets[p].Height
+
+		return true
+	} else {
+		return false
+	}
 }

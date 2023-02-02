@@ -7,9 +7,10 @@ import (
 
 type (
 	Config struct {
-		App  `json:"app"`
-		HTTP `json:"http"`
-		Log  `json:"logger"`
+		App     `json:"app"`
+		HTTP    `json:"http"`
+		Log     `json:"logger"`
+		Presets []Preset `json:"presets"`
 	}
 
 	App struct {
@@ -23,6 +24,12 @@ type (
 
 	Log struct {
 		Level string `env-required:"true" json:"logLevel" env:"LOG_LEVEL"`
+	}
+
+	Preset struct {
+		Name   string `json:"name"`
+		Width  uint   `json:"width"`
+		Height uint   `json:"height"`
 	}
 )
 

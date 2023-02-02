@@ -16,7 +16,7 @@ import (
 func Run(cfg *config.Config) {
 	l := logger.New(cfg.Log.Level)
 
-	scalingUseCase := usecase.New()
+	scalingUseCase := usecase.New(cfg.Presets)
 
 	handler := gin.New()
 	v1.NewRouter(handler, l, scalingUseCase)

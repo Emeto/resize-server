@@ -47,14 +47,24 @@ func (r *scalingRoutes) doScale(c *gin.Context) {
 	}
 
 	dims := strings.Split(size, "x")
-	w, _ := strconv.ParseUint(dims[0], 10, 0)
-	h, _ := strconv.ParseUint(dims[1], 10, 0)
-	r.s.Scale.Width = uint(w)
-	r.s.Scale.Height = uint(h)
+	if len(dims) == 1 {
+		ok := r.s.SetSizeFromPreset(dims[0])
+		if !ok {
+			r.l.Error("unknown preset", "http - v1 - doScale(r.s.SetSizeFromPreset")
+			errorResponse(c, http.StatusBadRequest, "unknown preset")
+
+			return
+		}
+	} else {
+		w, _ := strconv.ParseUint(dims[0], 10, 0)
+		h, _ := strconv.ParseUint(dims[1], 10, 0)
+		r.s.Scale.Width = uint(w)
+		r.s.Scale.Height = uint(h)
+	}
 
 	s := strings.Split(path, "/")
 	file := strings.Split(s[len(s)-1], ".")
-	r.s.Scale.OutName = file[0] + "_" + dims[0] + "x" + dims[1] + "." + file[1]
+	r.s.Scale.OutName = file[0] + "_" + strconv.Itoa(int(r.s.Scale.Width)) + "x" + strconv.Itoa(int(r.s.Scale.Height)) + "." + file[1]
 	r.s.Scale.Ext = file[1]
 
 	ib, _ := r.s.GetImageBytes(r.s.Scale)

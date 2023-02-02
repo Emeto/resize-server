@@ -8,5 +8,12 @@
   },
   "logger": {
     "logLevel": "debug"
-  }
+  },
+  "presets": [
+    {
+      "name": "thumbnail",
+      "width": 400,
+      "height": 400
+    }
+  ]
 }
