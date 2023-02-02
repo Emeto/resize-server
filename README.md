@@ -15,6 +15,7 @@ To use this server, you only need to send a GET request to the `/v1/scale/do` en
 |------|--------------------------------------------------------------------------------------------------------------------------------------------|
 | path | The URL to the image                                                                                                                       |
 | size | Output size in pixels with the following format `600x300`. Set the height portion to 0 to keep the aspect ratio of the image i.e.: `200x0` |                                                                        
+
 The scaled image will be directly output to the response. The response `Content-Type` header will be set the same as the source MIME type.
 
 ## Configuration
