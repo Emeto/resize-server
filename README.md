@@ -18,26 +18,14 @@ To use this server, you only need to send a GET request to the `/v1/scale/do` en
 The scaled image will be directly output to the response. The response `Content-Type` header will be set the same as the source MIME type.
 
 ## Configuration
-Configuration is done using environment variables, configuration is pretty basic, **if the defaults are good enough for your use case, setting them is not required**.
+Configuration is done in the `./config/config.json` file, configuration is pretty basic.
 
-| Key       | Value                                                                                                          | Default |
-|-----------|----------------------------------------------------------------------------------------------------------------|---------|
-| HTTP_PORT | Port of the built-in HTTP server                                                                               | 80      |
-| LOG_LEVEL | Minimum level of logs that output to the console, accept the following values : `info` `warn` `error` `debug`  | debug   |
+| Key             | Value                                                                                                          | Default |
+|-----------------|----------------------------------------------------------------------------------------------------------------|---------|
+| http.port       | Port of the built-in HTTP server                                                                               | 80      |
+| logger.logLevel | Minimum level of logs that output to the console, accept the following values : `info` `warn` `error` `debug`  | debug   |
 
-Definition of these variables depends on how the server is deployed :
-
-### Pre-built binaries
-Create an `.env` file in the same directory as the binary and paste this in :
-```dotenv
-HTTP_PORT=80
-LOG_LEVEL=debug
-```
-
-### Docker
-Specify the variables when running `docker run` or set them in the `docker-compose.yml` file from the source
-
-## Misc. endpoints
+## Misc. Endpoints
 
 | Endpoint | Method | Description                                     |
 |----------|--------|-------------------------------------------------|
