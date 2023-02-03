@@ -48,9 +48,9 @@ func (r *scalingRoutes) doScale(c *gin.Context) {
 
 	dims := strings.Split(size, "x")
 	if len(dims) == 1 {
-		ok := r.s.SetSizeFromPreset(dims[0])
+		ok := r.s.SetParamsFromPreset(dims[0])
 		if !ok {
-			r.l.Error("unknown preset", "http - v1 - doScale(r.s.SetSizeFromPreset")
+			r.l.Error("unknown preset")
 			errorResponse(c, http.StatusBadRequest, "unknown preset")
 
 			return
@@ -72,7 +72,7 @@ func (r *scalingRoutes) doScale(c *gin.Context) {
 
 	img, err := r.s.Decode(buf, r.s.Scale)
 	if err != nil {
-		r.l.Error(err, "http - v1 - doScale(r.s.Decode)")
+		r.l.Error(err)
 		errorResponse(c, http.StatusInternalServerError, "error while decoding image bytes")
 
 		return
@@ -81,7 +81,7 @@ func (r *scalingRoutes) doScale(c *gin.Context) {
 	m := resize.Resize(r.s.Scale.Width, r.s.Scale.Height, img, r.s.Scale.InterFunc)
 	ebuf, err := r.s.Encode(m, r.s.Scale)
 	if err != nil {
-		r.l.Error(err, "http - v1 - doScale(r.s.Encode)")
+		r.l.Error(err)
 		errorResponse(c, http.StatusInternalServerError, "error while encoding image bytes")
 
 		return
@@ -90,7 +90,7 @@ func (r *scalingRoutes) doScale(c *gin.Context) {
 	c.Header("Content-Type", r.s.Scale.MimeType())
 	_, err = c.Writer.Write(ebuf.Bytes())
 	if err != nil {
-		r.l.Error(err, "http - v1 - doScale(c.Writer.Write)")
+		r.l.Error(err)
 		errorResponse(c, http.StatusInternalServerError, "error while writing response body")
 	}
 }

@@ -14,8 +14,9 @@ type (
 	}
 
 	App struct {
-		Name    string `env-required:"true" json:"name" env:"APP_NAME"`
-		Version string `env-required:"true" json:"version" env:"APP_VERSION"`
+		Name      string `env-required:"true" json:"name" env:"APP_NAME"`
+		Version   string `env-required:"true" json:"version" env:"APP_VERSION"`
+		InterFunc string `env-required:"true" json:"defaultInterFunc" env:"APP_DEFAULT_INTER_FUNC"`
 	}
 
 	HTTP struct {
@@ -27,9 +28,10 @@ type (
 	}
 
 	Preset struct {
-		Name   string `json:"name"`
-		Width  uint   `json:"width"`
-		Height uint   `json:"height"`
+		Name      string `json:"name"`
+		Width     uint   `json:"width"`
+		Height    uint   `json:"height"`
+		InterFunc string `json:"interFunc"`
 	}
 )
 

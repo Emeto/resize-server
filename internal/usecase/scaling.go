@@ -15,16 +15,18 @@ import (
 )
 
 type ScalingUseCase struct {
-	Scale   entity.Scaling
-	Presets map[string]Preset
+	Scale     entity.Scaling
+	Presets   map[string]Preset
+	InterFunc string
 }
 
 type Preset struct {
-	Width  uint
-	Height uint
+	Width     uint
+	Height    uint
+	InterFunc string
 }
 
-func New(presets []config.Preset) *ScalingUseCase {
+func New(presets []config.Preset, dInterFunc string) *ScalingUseCase {
 	prMap := make(map[string]Preset, len(presets))
 
 	for _, preset := range presets {
@@ -34,14 +36,18 @@ func New(presets []config.Preset) *ScalingUseCase {
 		}
 	}
 
-	return &ScalingUseCase{
+	uc := &ScalingUseCase{
 		Scale: entity.Scaling{
 			Width:     600,
 			Height:    0,
-			InterFunc: resize.Lanczos3,
+			InterFunc: resize.NearestNeighbor,
 		},
 		Presets: prMap,
 	}
+
+	SetInterpolationFunction(dInterFunc, &uc.Scale)
+
+	return uc
 }
 
 func (uc *ScalingUseCase) GetImageBytes(s entity.Scaling) ([]byte, error) {
@@ -112,14 +118,38 @@ func (uc *ScalingUseCase) Encode(m image.Image, s entity.Scaling) (*bytes.Buffer
 	return nil, fmt.Errorf("ScalingUseCase(Encode) - unsupported file extension")
 }
 
-func (uc *ScalingUseCase) SetSizeFromPreset(p string) bool {
+func (uc *ScalingUseCase) SetParamsFromPreset(p string) bool {
 	_, ok := uc.Presets[p]
 	if ok {
 		uc.Scale.Width = uc.Presets[p].Width
 		uc.Scale.Height = uc.Presets[p].Height
+		SetInterpolationFunction(uc.Presets[p].InterFunc, &uc.Scale)
 
 		return true
 	} else {
 		return false
+	}
+}
+
+func SetInterpolationFunction(f string, s *entity.Scaling) {
+	switch f {
+	case "NearestNeighbor":
+		s.InterFunc = resize.NearestNeighbor
+		break
+	case "Bilinear":
+		s.InterFunc = resize.Bilinear
+		break
+	case "Bicubic":
+		s.InterFunc = resize.Bicubic
+		break
+	case "MitchellNetravali":
+		s.InterFunc = resize.MitchellNetravali
+		break
+	case "Lanczos2":
+		s.InterFunc = resize.Lanczos2
+		break
+	case "Lanczos3":
+		s.InterFunc = resize.Lanczos3
+		break
 	}
 }
